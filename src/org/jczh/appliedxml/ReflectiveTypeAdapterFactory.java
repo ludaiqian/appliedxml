@@ -19,7 +19,6 @@ import org.jczh.appliedxml.annotation.Element;
 import org.jczh.appliedxml.annotation.ElementArray;
 import org.jczh.appliedxml.annotation.ElementList;
 import org.jczh.appliedxml.annotation.ElementMap;
-import org.jczh.appliedxml.annotation.Transient;
 import org.jczh.appliedxml.utils.ReflectUtil;
 import org.jczh.appliedxml.utils.StringUtil;
 import org.jczh.appliedxml.utils.TextTypeUtil;
@@ -31,9 +30,14 @@ import com.google.gsoncode.internal.TypeToken;
 
 final class ReflectiveTypeAdapterFactory implements TypeAdapterFactory {
 	private final ConstructorConstructor constructorConstructor;
+	private final Excluder excluder = Excluder.DEFAULT;
 
 	ReflectiveTypeAdapterFactory(ConstructorConstructor constructorConstructor) {
 		this.constructorConstructor = constructorConstructor;
+	}
+
+	public boolean checkFieldSerialialbe(Field f, boolean serialize) {
+		return !excluder.excludeClass(f.getType(), serialize) && !excluder.excludeField(f, serialize);
 	}
 
 	public <T> TypeAdapter<T> create(Serializer serializer, final TypeToken<T> type) {
@@ -52,80 +56,74 @@ final class ReflectiveTypeAdapterFactory implements TypeAdapterFactory {
 		boolean isElement = true;
 		boolean isAttribute;
 		boolean isRequired;
-		boolean isTransient;
 		Field field;
 		ContainerDefine containerDefine;
 		@SuppressWarnings("rawtypes")
 		TypeAdapter typeAdapter;
 		ArrayList<Namespace> namespaces;
+		final boolean serialized;
+		final boolean deserialized;
 
-		protected BoundField(Serializer context, Field field, TypeToken<?> fieldType) {
-			isTransient = field.getAnnotation(Transient.class) != null;
+		protected BoundField(Serializer context, Field field, TypeToken<?> fieldType, boolean serialized, boolean deserialized) {
+			this.serialized = serialized;
+			this.deserialized = deserialized;
 			name = context.getFieldNamingStrategy().translateName(field);
 			isRequired = context.isNullValueSerializeRequired();
-			if (!isTransient) {
-				Attribute attributeAnnotation = field.getAnnotation(Attribute.class);
-				if (attributeAnnotation != null) {
-					if (!StringUtil.isEmpty(attributeAnnotation.name()))
-						name = attributeAnnotation.name();
-					isAttribute = true;
-					isElement = false;
-					prefix = StringUtil.isEmpty(attributeAnnotation.prefix()) ? context.getDefaultAttributePrefix()
-							: attributeAnnotation.prefix();
-					isRequired = attributeAnnotation.required();
-				} else {
-					prefix = context.getDefaultElementPrefix();
-					Element elementAnnotation = field.getAnnotation(Element.class);
-					ElementArray elementArray = field.getAnnotation(ElementArray.class);
-					ElementList elementList = field.getAnnotation(ElementList.class);
-					ElementMap elementMap = field.getAnnotation(ElementMap.class);
+			Attribute attributeAnnotation = field.getAnnotation(Attribute.class);
+			if (attributeAnnotation != null) {
+				if (!StringUtil.isEmpty(attributeAnnotation.name()))
+					name = attributeAnnotation.name();
+				isAttribute = true;
+				isElement = false;
+				prefix = StringUtil.isEmpty(attributeAnnotation.prefix()) ? context.getDefaultAttributePrefix()
+						: attributeAnnotation.prefix();
+				isRequired = attributeAnnotation.required();
+			} else {
+				prefix = context.getDefaultElementPrefix();
+				Element elementAnnotation = field.getAnnotation(Element.class);
+				ElementArray elementArray = field.getAnnotation(ElementArray.class);
+				ElementList elementList = field.getAnnotation(ElementList.class);
+				ElementMap elementMap = field.getAnnotation(ElementMap.class);
 
-					if (Modifier.isStatic(field.getModifiers()) && elementAnnotation == null && elementList == null
-							&& elementMap == null) {
-						isElement = false;
-						isTransient = true;
-						return;
-					}
-					if (elementAnnotation != null) {
-						if (!StringUtil.isEmpty(elementAnnotation.name()))
-							name = elementAnnotation.name();
-						if (!StringUtil.isEmpty(elementAnnotation.prefix()))
-							prefix = elementAnnotation.prefix();
-						isRequired = elementAnnotation.required();
-					} else if (elementList != null && Collection.class.isAssignableFrom(fieldType.getRawType())) {
-						if (!StringUtil.isEmpty(elementList.name()))
-							name = elementList.name();
-						if (!StringUtil.isEmpty(elementList.prefix()))
-							prefix = elementList.prefix();
-						isRequired = elementList.required();
-						// elementName=elementList.entry();
-						containerDefine = new ContainerDefine(ContainerType.List, elementList.entry(), null, null, false, false);
-					} else if (elementMap != null && Map.class.isAssignableFrom(fieldType.getRawType())) {
-						if (!StringUtil.isEmpty(elementMap.name()))
-							name = elementMap.name();
-						if (!StringUtil.isEmpty(elementMap.prefix()))
-							prefix = elementMap.prefix();
-						isRequired = elementMap.required();
-						containerDefine = new ContainerDefine(ContainerType.Map, elementMap.entry(), elementMap.key(),
-								elementMap.value(), elementMap.keyAsAttribute(), elementMap.valueAsText());
-					} else if (elementArray != null
-							&& (fieldType.getType() instanceof GenericArrayType || fieldType.getType() instanceof Class
-									&& ((Class<?>) fieldType.getType()).isArray())) {
-						if (!StringUtil.isEmpty(elementArray.name()))
-							name = elementList.name();
-						if (!StringUtil.isEmpty(elementArray.prefix()))
-							prefix = elementArray.prefix();
-						isRequired = elementArray.required();
-						// elementName=elementList.entry();
-						containerDefine = new ContainerDefine(ContainerType.Array, elementArray.entry(), null, null, false, false);
-					}
-
+				if (elementAnnotation != null) {
+					if (!StringUtil.isEmpty(elementAnnotation.name()))
+						name = elementAnnotation.name();
+					if (!StringUtil.isEmpty(elementAnnotation.prefix()))
+						prefix = elementAnnotation.prefix();
+					isRequired = elementAnnotation.required();
+				} else if (elementList != null && Collection.class.isAssignableFrom(fieldType.getRawType())) {
+					if (!StringUtil.isEmpty(elementList.name()))
+						name = elementList.name();
+					if (!StringUtil.isEmpty(elementList.prefix()))
+						prefix = elementList.prefix();
+					isRequired = elementList.required();
+					// elementName=elementList.entry();
+					containerDefine = new ContainerDefine(ContainerType.List, elementList.entry(), null, null, false, false);
+				} else if (elementMap != null && Map.class.isAssignableFrom(fieldType.getRawType())) {
+					if (!StringUtil.isEmpty(elementMap.name()))
+						name = elementMap.name();
+					if (!StringUtil.isEmpty(elementMap.prefix()))
+						prefix = elementMap.prefix();
+					isRequired = elementMap.required();
+					containerDefine = new ContainerDefine(ContainerType.Map, elementMap.entry(), elementMap.key(),
+							elementMap.value(), elementMap.keyAsAttribute(), elementMap.valueAsText());
+				} else if (elementArray != null
+						&& (fieldType.getType() instanceof GenericArrayType || fieldType.getType() instanceof Class
+								&& ((Class<?>) fieldType.getType()).isArray())) {
+					if (!StringUtil.isEmpty(elementArray.name()))
+						name = elementList.name();
+					if (!StringUtil.isEmpty(elementArray.prefix()))
+						prefix = elementArray.prefix();
+					isRequired = elementArray.required();
+					// elementName=elementList.entry();
+					containerDefine = new ContainerDefine(ContainerType.Array, elementArray.entry(), null, null, false, false);
 				}
-				this.field = field;
-				this.fieldType = fieldType;
-				this.namespaces = ReflectUtil.extractNamespaces(field);
-				typeAdapter = context.getAdapter(fieldType);
+
 			}
+			this.field = field;
+			this.fieldType = fieldType;
+			this.namespaces = ReflectUtil.extractNamespaces(field);
+			typeAdapter = context.getAdapter(fieldType);
 		}
 
 		public Object get(Object object) throws IllegalArgumentException, IllegalAccessException {
@@ -152,6 +150,7 @@ final class ReflectiveTypeAdapterFactory implements TypeAdapterFactory {
 		@SuppressWarnings("rawtypes")
 		@Override
 		public T read(XmlReader in) throws IOException {
+
 			if (!in.hasNext())
 				return null;
 			T instance = constructor.construct();
@@ -184,6 +183,8 @@ final class ReflectiveTypeAdapterFactory implements TypeAdapterFactory {
 					// boundFields.get(key);
 					BoundField boundField = boundFields.get(node.getName());
 					if (boundField != null) {
+						if (!boundField.deserialized)
+							continue;
 						TypeAdapter adapter = boundField.typeAdapter;
 						if (boundField.containerDefine != null) {
 							TypeAdapter containerAdapter = context.getTypeAdapterManager().getContainerTypeAdater(
@@ -226,8 +227,9 @@ final class ReflectiveTypeAdapterFactory implements TypeAdapterFactory {
 				}
 				for (BoundField boundField : boundFields.values()) {
 					// if (boundField.serialized) {
+					if (!boundField.serialized)
+						continue;
 					Object fieldValue = boundField.get(value);
-
 					if (fieldValue != null || boundField.isRequired) {
 						out.writeStart(boundField.name, boundField.prefix);
 						if (boundField.namespaces != null)
@@ -247,9 +249,7 @@ final class ReflectiveTypeAdapterFactory implements TypeAdapterFactory {
 							adapter.write(out, fieldValue);
 						}
 						out.writeEnd(boundField.name, boundField.prefix);
-
 					}
-
 				}
 			} catch (IllegalArgumentException e) {
 				throw new NodeException(e);
@@ -272,18 +272,20 @@ final class ReflectiveTypeAdapterFactory implements TypeAdapterFactory {
 				for (Field field : fields) {
 					field.setAccessible(true);
 					Type fieldType = $Gson$Types.resolve(type.getType(), raw, field.getGenericType());
-					BoundField boundField = new BoundField(context, field, TypeToken.get(fieldType));
-					if (!boundField.isTransient) {
-						BoundField previous = null;
-						if (boundField.isAttribute) {
-							previous = boundAttrs.put(boundField.name, boundField);
-						} else if (boundField.isElement) {
-							previous = boundFields.put(boundField.name, boundField);
-						}
-						if (previous != null) {
-							throw new IllegalArgumentException(declaredType + " declares multiple JSON fields named "
-									+ previous.name);
-						}
+					boolean serialize = checkFieldSerialialbe(field, true);
+					boolean deserialize = checkFieldSerialialbe(field, false);
+					if (!serialize && !deserialize) {
+						continue;
+					}
+					BoundField boundField = new BoundField(context, field, TypeToken.get(fieldType), serialize, deserialize);
+					BoundField previous = null;
+					if (boundField.isAttribute) {
+						previous = boundAttrs.put(boundField.name, boundField);
+					} else if (boundField.isElement) {
+						previous = boundFields.put(boundField.name, boundField);
+					}
+					if (previous != null) {
+						throw new IllegalArgumentException(declaredType + " declares multiple JSON fields named " + previous.name);
 					}
 
 				}
@@ -292,6 +294,15 @@ final class ReflectiveTypeAdapterFactory implements TypeAdapterFactory {
 				type = TypeToken.get($Gson$Types.resolve(type.getType(), raw, raw.getGenericSuperclass()));
 				raw = type.getRawType();
 			}
+		}
+
+		@SuppressWarnings("unused")
+		private boolean isInnerClass(Class<?> clazz) {
+			return clazz.isMemberClass() && !isStatic(clazz);
+		}
+
+		private boolean isStatic(Class<?> clazz) {
+			return (clazz.getModifiers() & Modifier.STATIC) != 0;
 		}
 	}
 

@@ -47,7 +47,7 @@ class DocumentTreeBuilderFactory implements ElementConstructorFactory {
 			for (String unSerializablePacketPrefix : unSerializablePacketPrefixs) {
 				if (packetName.startsWith(unSerializablePacketPrefix)) {
 					Serializable serializable = (Serializable) type.getAnnotation(Serializable.class);
-					if (serializable == null && !org.jczh.appliedxml.XmlSerializable.class.isAssignableFrom(type))
+					if (serializable == null ||!serializable.value())
 						return new UnSerializedElement(name, type, value);
 				}
 			}
@@ -227,8 +227,6 @@ class DocumentTreeBuilderFactory implements ElementConstructorFactory {
 				return false;
 			if (Map.class.isAssignableFrom(type))
 				return false;
-			if (org.jczh.appliedxml.XmlSerializable.class.isAssignableFrom(type))
-				return true;
 			Serializable serializable = field.getAnnotation(Serializable.class);
 			if (serializable != null)
 				return serializable.value();
@@ -244,7 +242,7 @@ class DocumentTreeBuilderFactory implements ElementConstructorFactory {
 		 * <li>
 		 * 包名以java、javax、android、com.google、org.apache、com.sun开头
 		 * </ol>
-		 * 当遇到上述情况，又需要解析时 可以实现{@link XmlSerializable}或者使用注解{@link Serializable}
+		 * 当遇到上述情况，又需要解析时 可以实现{@link Buildable}或者使用注解{@link Buildable}
 		 * 
 		 * @param object
 		 */

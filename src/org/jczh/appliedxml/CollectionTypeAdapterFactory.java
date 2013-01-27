@@ -74,13 +74,11 @@ final class CollectionTypeAdapterFactory implements TypeAdapterFactory {
 				EventNode node = in.next();
 				if ((node.isStart() && itemName.equals(node.getName()))) {
 					E instance = elementTypeAdapter.read(in);
-					System.out.println(instance);
 					collection.add(instance);
 				}
 				if (node.isEnd() && last.getName().equals(node.getName()) && last.depth() == node.depth())
 					break;
 			}
-			System.out.println(in.hasNext());
 			return collection;
 		}
 
