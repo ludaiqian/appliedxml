@@ -1,44 +1,93 @@
 package test.helloworld;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.HashMap;
 
 import org.jczh.appliedxml.Serializer;
-import org.jczh.appliedxml.annotation.ElementMap;
+import org.jczh.appliedxml.annotation.Attribute;
+import org.jczh.appliedxml.annotation.Transient;
 
 public class BeanTest {
-//	// 该字段将不会被序列化
-//	@Transient
-//	private String version;
-//	// 属性
-//	@Attribute
-//	private String attr1;
-//
-//	private String element1;
-//	private String element2;
-//	private String[] testKeys = { "a", "b", "c" };
-	@ElementMap(keyAsAttribute = true)
-	private HashMap<String, JavaBean> beans = new HashMap<String, JavaBean>();
+	// 该字段将不会被序列化
+	@Transient
+	private String version;
+	// 属性
+	@Attribute
+	private String attr1;
+
+	private String element1;
+	private String element2;
+	private String[] testKeys = { "a", "b", "c" };
+	private JavaBean javabean;
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public String getAttr1() {
+		return attr1;
+	}
+
+	public void setAttr1(String attr1) {
+		this.attr1 = attr1;
+	}
+
+	public String getElement1() {
+		return element1;
+	}
+
+	public void setElement1(String element1) {
+		this.element1 = element1;
+	}
+
+	public String getElement2() {
+		return element2;
+	}
+
+	public void setElement2(String element2) {
+		this.element2 = element2;
+	}
+
+	public String[] getTestKeys() {
+		return testKeys;
+	}
+
+	public void setTestKeys(String[] testKeys) {
+		this.testKeys = testKeys;
+	}
+
+	public JavaBean getJavabean() {
+		return javabean;
+	}
+
+	public void setJavabean(JavaBean javabean) {
+		this.javabean = javabean;
+	}
 
 	public BeanTest() {
-		beans.put("bean1", new JavaBean());
-		
+
 	}
 
 	public static void main(String[] args) throws IOException {
-		Serializer serializer=new Serializer();
+		Serializer serializer = new Serializer();
 		serializer.setFormatted(true);
-		String xml = serializer.toXml(new BeanTest());
+		serializer.setNullValueSerializeRequired(false);
+		BeanTest beanTest = new BeanTest();
+		beanTest.setVersion("1.0");
+		beanTest.setAttr1("attr");
+		beanTest.setElement1("e1");
+		beanTest.setElement2("e2");
+		JavaBean javabean=new JavaBean();
+		javabean.setBean1("b1");
+		beanTest.setJavabean(javabean);
+		String xml = serializer.toXml(beanTest);
 		System.out.println(xml);
-//		for (Field f : JavaBean.class.getDeclaredFields()) {
-//			if(f.getName().equals("this$0"))
-//				System.out.println("good");
-//			System.out.println(f.getName());
-//		}
 	}
 
-	public  class JavaBean {
+	public static class JavaBean {
 		String bean1;
 		String bean2;
 

@@ -57,6 +57,7 @@ public class Test {
 		System.out.println("----------·Ö¸îÏß-----------------");
 		Service service = mainTest.xml2Service();
 		System.out.println(service);
+
 	}
 
 	public String service2Xml() throws IOException {

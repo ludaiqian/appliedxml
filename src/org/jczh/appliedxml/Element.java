@@ -6,8 +6,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 根据对象和对象field 生成的xml树，可代表 普通节点、文本及未序列化内容
+ * 
+ * @version 1.0
+ * @since 1.0
+ * @author ludaiqian@126.com
+ * @see TextElement
+ * @see UnSerializedElement
+ * 
+ */
 public class Element extends Node {
-	
+
 	private Element parent;
 	private ArrayList<Element> childElements;
 	private Map<String, Attribute> attributes;

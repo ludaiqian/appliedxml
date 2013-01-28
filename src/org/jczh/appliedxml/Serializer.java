@@ -308,7 +308,7 @@ public class Serializer {
 			formatter = new Format(0);
 	}
 
-	boolean isAssociatedWithSuperClass() {
+	public boolean isAssociatedWithSuperClass() {
 		return associatedWithSuperClass;
 	}
 

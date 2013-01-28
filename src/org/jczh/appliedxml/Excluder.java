@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.jczh.appliedxml.annotation.Serializable;
 import org.jczh.appliedxml.annotation.Transient;
 
 /**
@@ -103,9 +104,9 @@ public final class Excluder implements Cloneable {
 	}
 
 	public boolean excludeClass(Class<?> clazz, boolean serialize) {
-		Transient annotation = clazz.getAnnotation(Transient.class);
+		Serializable annotation = clazz.getAnnotation(Serializable.class);
 		if (annotation != null) {
-			return true;
+			return !annotation.value();
 		}
 
 		if (!serializeInnerClasses && isInnerClass(clazz)) {

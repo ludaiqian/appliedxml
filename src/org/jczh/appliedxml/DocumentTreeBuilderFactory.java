@@ -242,7 +242,7 @@ class DocumentTreeBuilderFactory implements ElementConstructorFactory {
 		 * <li>
 		 * 包名以java、javax、android、com.google、org.apache、com.sun开头
 		 * </ol>
-		 * 当遇到上述情况，又需要解析时 可以实现{@link Buildable}或者使用注解{@link Buildable}
+		 * 当遇到上述情况，又需要解析时 可以使用注解{@link Serializable}
 		 * 
 		 * @param object
 		 */

@@ -19,6 +19,7 @@ import org.jczh.appliedxml.annotation.Element;
 import org.jczh.appliedxml.annotation.ElementArray;
 import org.jczh.appliedxml.annotation.ElementList;
 import org.jczh.appliedxml.annotation.ElementMap;
+import org.jczh.appliedxml.annotation.Serializable;
 import org.jczh.appliedxml.utils.ReflectUtil;
 import org.jczh.appliedxml.utils.StringUtil;
 import org.jczh.appliedxml.utils.TextTypeUtil;
@@ -40,12 +41,15 @@ final class ReflectiveTypeAdapterFactory implements TypeAdapterFactory {
 		return !excluder.excludeClass(f.getType(), serialize) && !excluder.excludeField(f, serialize);
 	}
 
-	public <T> TypeAdapter<T> create(Serializer serializer, final TypeToken<T> type) {
+	public <T> TypeAdapter<T> create(Serializer context, final TypeToken<T> type) {
 		Class<? super T> raw = type.getRawType();
 		if (!Object.class.isAssignableFrom(raw)) {
 			return null; // it's a primitive!
 		}
-		return new Adapter<T>(serializer, type);
+		Serializable serializable = raw.getAnnotation(Serializable.class);
+		if (serializable != null && !serializable.value())
+			throw new NodeException("unerializable class " + raw.getSimpleName());
+		return new Adapter<T>(context, type);
 	}
 
 	static class BoundField {
@@ -289,8 +293,9 @@ final class ReflectiveTypeAdapterFactory implements TypeAdapterFactory {
 					}
 
 				}
-				if (!context.isAssociatedWithSuperClass())
+				if (!context.isAssociatedWithSuperClass()){
 					break;
+				}
 				type = TypeToken.get($Gson$Types.resolve(type.getType(), raw, raw.getGenericSuperclass()));
 				raw = type.getRawType();
 			}
