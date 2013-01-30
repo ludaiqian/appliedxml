@@ -1,0 +1,20 @@
+<qws>
+	<qw hasimg="1">
+		<eid>考试ID</eid>
+		<sid>科目ID</sid>
+		<pid>试卷ID</pid>
+		<qid>题目ID</qid>
+		<qs>1新增2删除</qs>
+		<ua>用户答案</ua>
+		<qt>题目类别</qt>
+		<t>题目标题</t>
+		<s>分值 </s>
+		<ops>
+			<t s="A">A选项内容</t>
+			<t s="B">B选项内容</t>
+		</ops>
+		<an>B</an>
+		<p>解析</p>
+		<r>多选题计分规则(R_0.5)</r>
+	</qw>
+</qws>
