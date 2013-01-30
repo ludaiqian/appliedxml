@@ -19,7 +19,7 @@ import java.util.Map;
 public class Element extends Node {
 
 	private Element parent;
-	private ArrayList<Element> childElements;
+	private List<Element> childElements;
 	private Map<String, Attribute> attributes;
 	private boolean required = true;
 	private List<Namespace> namespaces;
@@ -27,6 +27,10 @@ public class Element extends Node {
 
 	public Element() {
 		this(null);
+	}
+
+	public static Element createShell(String name) {
+		return new Element(name);
 	}
 
 	public Element(String name) {
