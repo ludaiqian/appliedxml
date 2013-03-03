@@ -115,7 +115,7 @@ final class ReflectiveTypeAdapterFactory implements TypeAdapterFactory {
 						&& (fieldType.getType() instanceof GenericArrayType || fieldType.getType() instanceof Class
 								&& ((Class<?>) fieldType.getType()).isArray())) {
 					if (!StringUtil.isEmpty(elementArray.name()))
-						name = elementList.name();
+						name = elementArray.name();
 					if (!StringUtil.isEmpty(elementArray.prefix()))
 						prefix = elementArray.prefix();
 					isRequired = elementArray.required();
