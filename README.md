@@ -72,10 +72,10 @@ public class BeanTest {
 	// 标记该字段为属性
 	@Attribute
 	private String attr1;
-	@Element(name="elment_1")//映射为不同的节点名称
+	@Element(name="elment_1")//映射xml中名称为element_1节点
 	private String element1;
 	private String element2;
-	//数组
+	//数组 [默认生成的节点名为类名，若需要修改，可配置注解 ElementArray，指定entry名称]
 	private String[] testKeys = { "a", "b", "c" };
 	@ElementList(name="array",entry="key")//字段对应xml “array”节点，entry对应 “key”节点
 	private List<String> testArray=new ArrayList<String>();
