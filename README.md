@@ -19,7 +19,7 @@ tips：此项目是自己4年前编写，如今看来有很多可改善之处，
 * Serializable 标记类是否可被序列化
 
 ### 可统一配置改类名or字段名转xml节点 映射策略
-
+#### 例如：
 <pre><code>
 // 设置class转换xml节点的映射名称
 serializer = new Serializer();
