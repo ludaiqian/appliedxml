@@ -70,25 +70,6 @@ public class BeanTest {
 
         }
 
-        public static void main(String[] args) throws IOException {
-                // 创建序列化转换对象
-                Serializer serializer = new Serializer();
-                // 设置是否格式化
-                serializer.setFormatted(true);
-                // 空置是否序列化
-                serializer.setNullValueSerializeRequired(false);
-                BeanTest beanTest = new BeanTest();
-                beanTest.setVersion("1.0");
-                beanTest.setAttr1("attr");
-                beanTest.setElement1("e1");
-                beanTest.setElement2("e2");
-                JavaBean javabean = new JavaBean();
-                javabean.setBean1("b1");
-                beanTest.setJavabean(javabean);
-                // 将对象转为xml
-                String xml = serializer.toXml(beanTest);
-                System.out.println(xml);
-        }
 
         public static class JavaBean {
                 String bean1;
@@ -115,6 +96,26 @@ public class BeanTest {
                         return "JavaBean [bean1=" + bean1 + ", bean2=" + bean2 + "]";
                 }
 
+        }
+        
+        public static void main(String[] args) throws IOException {
+                // 创建序列化转换对象
+                Serializer serializer = new Serializer();
+                // 设置是否格式化
+                serializer.setFormatted(true);
+                // 空置是否序列化
+                serializer.setNullValueSerializeRequired(false);
+                BeanTest beanTest = new BeanTest();
+                beanTest.setVersion("1.0");
+                beanTest.setAttr1("attr");
+                beanTest.setElement1("e1");
+                beanTest.setElement2("e2");
+                JavaBean javabean = new JavaBean();
+                javabean.setBean1("b1");
+                beanTest.setJavabean(javabean);
+                // 将对象转为xml
+                String xml = serializer.toXml(beanTest);
+                System.out.println(xml);
         }
 }
 </code></pre>
