@@ -43,6 +43,7 @@ serializer.setFieldNamingStrategy(new FieldNamingStrategy() {
 		// 如果是Attribute则默认小写
 		if (f.getAnnotation(Attribute.class) != null)
 			return f.getName();
+		//Xml中定义为首字母大写
 		return f.getName().substring(0, 1).toUpperCase() + f.getName().substring(1);
 	}
 });
