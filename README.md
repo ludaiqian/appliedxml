@@ -131,12 +131,7 @@ public class BeanTest {
 	
 
 	public static void main(String[] args) throws IOException {
-		// 创建序列化转换对象
-		Serializer serializer = new Serializer();
-		// 设置是否格式化
-		serializer.setFormatted(true);
-		// 空置是否序列化
-		serializer.setNullValueSerializeRequired(false);
+		//编写测试bean
 		BeanTest beanTest = new BeanTest();
 		beanTest.setVersion("1.0");
 		beanTest.setAttr1("attr测试");
@@ -147,6 +142,12 @@ public class BeanTest {
 		JavaBean javabean = new JavaBean();
 		javabean.setBean1("b1");
 		beanTest.setJavabean(javabean);
+		// 创建序列化转换对象
+		Serializer serializer = new Serializer();
+		// 设置是否格式化
+		serializer.setFormatted(true);
+		// 空置是否序列化
+		serializer.setNullValueSerializeRequired(false);
 		// 将对象转为xml
 		String xml = serializer.toXml(beanTest);
 		System.out.println(xml);
