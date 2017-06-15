@@ -17,6 +17,36 @@ appliedxml是对object和xml之间的序列化和反序列化的库，设计时�
 * ElementMap  标记map类型字段
 * Transient 标记字段不可被序列化
 * Serializable 标记类是否可被序列化
+
+### 可统一配置属性-xml节点 映射策略
+
+<pre><code>
+// 设置obj转换xml节点的映射名称
+serializer = new Serializer();
+		serializer.setNullValueSerializeRequired(false);
+		// 设置缩进
+		serializer.setFormatted(true);
+		// 设置obj转换xml节点的映射名称
+		serializer.setClassNamingStrategy(new ClassNamingStrategy() {
+
+			@SuppressWarnings("rawtypes")
+			@Override
+			public String translateName(Class type) {
+				return type.getSimpleName();
+			}
+		});
+		// 设置fields转换xml节点的映射名称
+		serializer.setFieldNamingStrategy(new FieldNamingStrategy() {
+
+			@Override
+			public String translateName(Field f) {
+				// 如果是Attribute则默认小写
+				if (f.getAnnotation(Attribute.class) != null)
+					return f.getName();
+				return f.getName().substring(0, 1).toUpperCase() + f.getName().substring(1);
+			}
+		});
+		
 ## demo示例：
 
 
