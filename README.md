@@ -7,15 +7,16 @@ appliedxml是对object和xml之间的序列化和反序列化的库，设计时�
 ### 通过注解可以修改字段映射xml节点名称、解析方式等
 
 
-*   Namespace：标记该字段为xml中的 namespace
-*   NamespaceList
+*   Namespace
+*   NamespaceList   ：标记该字段或类为xml中的 namespace
 *   Attribute 标记该字段为xml 中的attribute属性
-*   Document 最外层对象 对应为xml的document  
-*   Element  普通类型
-*   ElementList 集合类型
-*   ElementArray  数组类型 
-*   ElementMap  map类型
-*   Transient 标记字段不可被序列化
+*   Document 标记类 
+*   Element  标记普通字段
+*   ElementList 标记集合类型字段
+*   ElementArray  标记数组类型字段
+*   ElementMap  标记map类型字段
+*   Transient 标记字段不可被序列化
+*   Serializable 标记类或接口是否可被序列化
 ## demo示例：
 
 
