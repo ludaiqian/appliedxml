@@ -21,32 +21,33 @@ appliedxml是对object和xml之间的序列化和反序列化的库，设计时�
 ### 可统一配置属性-xml节点 映射策略
 
 <pre><code>
-// 设置obj转换xml节点的映射名称
+// 设置class转换xml节点的映射名称
 serializer = new Serializer();
-		serializer.setNullValueSerializeRequired(false);
-		// 设置缩进
-		serializer.setFormatted(true);
-		// 设置obj转换xml节点的映射名称
-		serializer.setClassNamingStrategy(new ClassNamingStrategy() {
+serializer.setNullValueSerializeRequired(false);
+// 设置缩进
+serializer.setFormatted(true);
+// 设置class转换xml节点的映射名称
+serializer.setClassNamingStrategy(new ClassNamingStrategy() {
 
-			@SuppressWarnings("rawtypes")
-			@Override
-			public String translateName(Class type) {
-				return type.getSimpleName();
-			}
-		});
-		// 设置fields转换xml节点的映射名称
-		serializer.setFieldNamingStrategy(new FieldNamingStrategy() {
+	@SuppressWarnings("rawtypes")
+	@Override
+	public String translateName(Class type) {
+		return type.getSimpleName();
+	}
+});
+// 设置fields转换xml节点的映射名称
+serializer.setFieldNamingStrategy(new FieldNamingStrategy() {
 
-			@Override
-			public String translateName(Field f) {
-				// 如果是Attribute则默认小写
-				if (f.getAnnotation(Attribute.class) != null)
-					return f.getName();
-				return f.getName().substring(0, 1).toUpperCase() + f.getName().substring(1);
-			}
-		});
-		
+	@Override
+	public String translateName(Field f) {
+		// 如果是Attribute则默认小写
+		if (f.getAnnotation(Attribute.class) != null)
+			return f.getName();
+		return f.getName().substring(0, 1).toUpperCase() + f.getName().substring(1);
+	}
+});
+</code></pre>		
+
 ## demo示例：
 
 
