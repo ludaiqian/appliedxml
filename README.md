@@ -1,7 +1,8 @@
 # 项目描述
 appliedxml是对object和xml之间的序列化和反序列化的库，设计时主要参考了google开源项目GSON，平均效率约为另一个开源库SimpleXML的5倍左右，并且极大的提高易用性
-使用的方式类似于Gson，使用TypeToken，支持xml转各种类型对象。
-#demo示例：
+使用的方式类似于Gson，同样可以使用TypeToken，支持xml转各种类型对象。
+
+## demo示例：
 
 
 <pre><code>
