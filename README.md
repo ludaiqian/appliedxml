@@ -18,7 +18,7 @@ appliedxml是对object和xml之间的序列化和反序列化的库，设计时�
 * Transient 标记字段不可被序列化
 * Serializable 标记类是否可被序列化
 
-### 可统一配置改类名or字段名-xml节点 映射策略
+### 可统一配置改类名or字段名转xml节点 映射策略
 
 <pre><code>
 // 设置class转换xml节点的映射名称
