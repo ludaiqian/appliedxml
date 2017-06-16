@@ -78,7 +78,7 @@ public class BeanTest {
 	private String element2;
 	//数组 [默认生成的子节点名为数组内元素的类名，若需要修改，可配置注解 ElementArray，指定entry名称]
 	private String[] testKeys = { "a", "b", "c" };
-	@ElementList(name="array",entry="key")//字段对应xml “array”节点，entry对应 “key”节点
+	@ElementList(name="array",entry="key")//list名称 字段对应xml中 “array”节点，内部元素对应 “key”节点
 	private List<String> testArray=new ArrayList<String>();
 	private JavaBean javabean;
 
