@@ -183,6 +183,8 @@ public class BeanTest {
 		// 将对象转为xml
 		String xml = serializer.toXml(beanTest);
 		System.out.println(xml);
+		//将xml字符串转换为对象
+		BeanTest beanTest2=serializer.fromXml(xml, BeanTest.class);
 	}
 
 }
