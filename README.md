@@ -10,7 +10,7 @@ tips：此项目是自己4年前编写，如今看来有很多可改善之处，
 * Namespace  标记该字段或类为xml中的 namespace
 * NamespaceList 标记该字段或类为xml中的 namespace
 * Attribute 标记该字段为xml 中的attribute属性
-* Document 标记被序列化的类 
+* Document 标记被直接序列化的对象所属类
 * Element  标记普通字段
 * ElementList 标记集合类型字段
 * ElementArray  标记数组类型字段
